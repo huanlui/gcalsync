@@ -7,30 +7,56 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = [
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/calendar.events'
+]
 
 
 def main():
     tWService = build('calendar', 'v3', credentials=get_credentials("tw"))
     clientService = build('calendar', 'v3', credentials=get_credentials("client"))
 
+    twEvent = getEvents(tWService)[0]
+    createEvent(clientService, twEvent)
+
     listEvents(tWService)
     listEvents(clientService)
 
+def createEvent(service, sourceEvent):
+    eventBody = {
+        'summary': sourceEvent.get('summary',''),
+        'location': sourceEvent.get('location', ''),
+        'description': sourceEvent.get('description', ''),
+        'start': sourceEvent.get('start'),
+        'end': sourceEvent.get('end'),
+        'recurrence': sourceEvent.get('recurrence'),
+        'attendees': [
+        ],
+        'reminders': sourceEvent.get('reminders'),
+    }
+
+    createdEvent = service.events().insert(calendarId='primary', body=eventBody).execute()
+    print('Event created: ')
+    print(createdEvent.get('htmlLink'))
+
 def listEvents(service):
-    # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                        maxResults=10, singleEvents=True,
-                                        orderBy='startTime').execute()
-    events = events_result.get('items', [])
+    events = getEvents(service)
 
     if not events:
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         print(start, event['summary'])
+
+def getEvents(service):
+    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+    print('Getting the upcoming 10 events')
+    events_result = service.events().list(calendarId='primary', timeMin=now,
+                                        maxResults=10, singleEvents=True,
+                                        orderBy='startTime').execute()
+    events = events_result.get('items', [])
+    return events
 
 def get_credentials(source):
     creds = None
