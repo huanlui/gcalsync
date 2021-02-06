@@ -9,13 +9,16 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def get_credentials():
+def get_credentials(source):
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
+    tokenPath = source + '.token.pickle'
+    credentialsPath = source + '.credentials.json'
+
+    if os.path.exists(tokenPath):
+        with open(tokenPath, 'rb') as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -23,17 +26,17 @@ def get_credentials():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                credentialsPath, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
+        with open(tokenPath, 'wb') as token:
             pickle.dump(creds, token)
 
     return creds
 
 
 def main():
-    service = build('calendar', 'v3', credentials=get_credentials())
+    service = build('calendar', 'v3', credentials=get_credentials("tw"))
 
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
