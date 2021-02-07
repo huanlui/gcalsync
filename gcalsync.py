@@ -18,10 +18,14 @@ def main():
     clientService = build('calendar', 'v3', credentials=get_credentials("client"))
 
     twEvent = getEvents(tWService)[0]
-    createEvent(clientService, twEvent)
-
-    listEvents(tWService)
+    event = createEvent(clientService, twEvent)
     listEvents(clientService)
+    deleteEvent(clientService,event.get("id"))
+    listEvents(clientService)
+
+def deleteEvent(service, eventId):
+    print("Deleting event with id: " + eventId)
+    service.events().delete(calendarId='primary', eventId=eventId).execute()
 
 def createEvent(service, sourceEvent):
     eventBody = {
@@ -39,6 +43,8 @@ def createEvent(service, sourceEvent):
     createdEvent = service.events().insert(calendarId='primary', body=eventBody).execute()
     print('Event created: ')
     print(createdEvent.get('htmlLink'))
+    print(createdEvent)
+    return createdEvent;
 
 def listEvents(service):
     events = getEvents(service)
