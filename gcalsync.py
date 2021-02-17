@@ -5,6 +5,8 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+from src.date_period import starting_from_now_for_days, DatePeriod, starting_from_now_for_weeks
+
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -12,16 +14,22 @@ SCOPES = [
     'https://www.googleapis.com/auth/calendar.events'
 ]
 
-
 def main():
+     clientService = build('calendar', 'v3', credentials=get_credentials("client"))
+     events = getEvents(clientService, starting_from_now_for_weeks(2))
+     listEvents(events)
+
+def main2():
     tWService = build('calendar', 'v3', credentials=get_credentials("tw"))
     clientService = build('calendar', 'v3', credentials=get_credentials("client"))
 
     twEvent = getEvents(tWService)[0]
     event = createEvent(clientService, twEvent)
-    listEvents(clientService)
+    clientEvents = getEvents(clientService, starting_from_now_for_days(1))
+    listEvents(clientEvents)
     deleteEvent(clientService,event.get("id"))
-    listEvents(clientService)
+    clientEvents = getEvents(clientService, starting_from_now_for_days(1))
+    listEvents(clientEvents)
 
 def deleteEvent(service, eventId):
     print("Deleting event with id: " + eventId)
@@ -46,20 +54,20 @@ def createEvent(service, sourceEvent):
     print(createdEvent)
     return createdEvent;
 
-def listEvents(service):
-    events = getEvents(service)
-
+def listEvents(events):
     if not events:
         print('No upcoming events found.')
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         print(start, event['summary'])
 
-def getEvents(service):
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='primary', timeMin=now,
-                                        maxResults=10, singleEvents=True,
+def getEvents(service, period: DatePeriod):
+    #print("services for " + period)
+    print(datetime.datetime.utcnow().isoformat() + 'Z')
+    print(period.start)
+    print(period.end)
+    events_result = service.events().list(calendarId='primary', timeMin=period.start,
+                                        timeMax=period.end, singleEvents=True,
                                         orderBy='startTime').execute()
     events = events_result.get('items', [])
     return events
