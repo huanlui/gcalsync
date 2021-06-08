@@ -1,4 +1,4 @@
-# gaclsync
+# Google Calendar Synchronisation
 
 Pyhton script that synchronises calendars between two Google Accounts. 
 
