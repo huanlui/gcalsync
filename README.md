@@ -6,7 +6,13 @@ Python 3 is required.
 
 ### How to install
 
-TODO: Requirement
+```
+pip3 install -r requirements.txt
+```
+
+### Credentials
+
+
 
 
 ### Documentation
