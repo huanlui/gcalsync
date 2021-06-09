@@ -2,18 +2,13 @@ from src.date_period import DatePeriod
 from src.calendar import Calendar
 
 def main():
-    twCalendar = Calendar("tw")
-    clientCalendar = Calendar("client")
+    twCalendar = Calendar("tw", "primary")
+    
+    clientCalendarId = "" ## Put here the ID of your client calendar visible from your TW account
+    ## use  twCalendar.printCalendars() to see all your calendars and find out this id. 
+    clientCalendar = Calendar("tw", clientCalendarId )
 
-    twCalendar.printEventsForPeriod(DatePeriod.days(1))
-    clientCalendar.printEventsForPeriod(DatePeriod.days(1))
-
-    twEvent = twCalendar.getEvents(DatePeriod.days(1))[0]
-    event = clientCalendar.createEventFrom(twEvent)
-    clientCalendar.printEventsForPeriod(DatePeriod.days(1))
-
-    clientCalendar.deleteEvent(event.get("id"))
-    clientCalendar.printEventsForPeriod(DatePeriod.days(1))
+    twCalendar.copyAllEventsFrom(clientCalendar, DatePeriod.weeks(1))
 
 if __name__ == '__main__':
     main()

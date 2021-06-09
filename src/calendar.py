@@ -14,23 +14,45 @@ SCOPES = [
 ]
 
 class Calendar:
-    def __init__(self, name):
+    def __init__(self, name, calendarId):
         self.name = name
+        self.calendarId = calendarId
         self.service = self.__buildService(name)
 
+    def printCalendars(self):
+        page_token = None
+        while True:
+            calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
+            for calendar_list_entry in calendar_list['items']:
+                print(calendar_list_entry['summary'])
+                print(calendar_list_entry['id'])
+            page_token = calendar_list.get('nextPageToken')
+            if not page_token:
+                break
+
+    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod):
+        self.removeCopiedEvents(period)
+        for event in otherCalendar.getEvents(period):
+            self.createEventFrom(event)
+
     def getEvents(self, period: DatePeriod):
-        events_result = self.service.events().list(calendarId='primary', timeMin=period.start,
+        events_result = self.service.events().list(calendarId=self.calendarId, timeMin=period.start,
                                             timeMax=period.end, singleEvents=True,
                                             orderBy='startTime').execute()
         events = events_result.get('items', [])
         return events
 
+    def removeCopiedEvents(self, period: DatePeriod):
+        eventsToRemove = list(filter(lambda event: '[CLIENT MEETING]' in event.get('summary','') , self.getEvents(period)))
+        for event in eventsToRemove:
+            self.deleteEvent(event.get("id"))
+
     def deleteEvent(self, eventId):
-        self.service.events().delete(calendarId='primary', eventId=eventId).execute()
+        self.service.events().delete(calendarId=self.calendarId , eventId=eventId).execute()
 
     def createEventFrom(self,sourceEvent):
         eventBody = {
-            'summary': sourceEvent.get('summary',''),
+            'summary': '[CLIENT MEETING] ' + sourceEvent.get('summary',''),
             'location': sourceEvent.get('location', ''),
             'description': sourceEvent.get('description', ''),
             'start': sourceEvent.get('start'),
@@ -41,7 +63,7 @@ class Calendar:
             'reminders': sourceEvent.get('reminders'),
         }
 
-        createdEvent = self.service.events().insert(calendarId='primary', body=eventBody).execute()
+        createdEvent = self.service.events().insert(calendarId=self.calendarId , body=eventBody).execute()
 
         return createdEvent
 
@@ -55,8 +77,9 @@ class Calendar:
         if not events:
             print('No upcoming events found.')
         for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
+            # start = event['start'].get('dateTime', event['start'].get('date'))
+            # print(start, event['summary'])
+            print(event)
 
     def __buildService(self,source):
         credentials = None
