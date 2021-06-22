@@ -1,5 +1,5 @@
 from src.date_period import DatePeriod
-from src.calendar import Calendar
+from src.calendar_service import CalendarService
 import sys
 
 
@@ -9,8 +9,8 @@ def main(sourceAccountName, sourceCalendarId, targetAccountName, targetCalendarI
     if copySensibleData:
         print('WARNING: copying full inforation from the event. Make sure sensible data is not copied to your new calendar!!')
 
-    sourceCalendar = Calendar(sourceAccountName, sourceCalendarId)
-    targetCalendar = Calendar(targetAccountName, targetCalendarId)
+    sourceCalendar = CalendarService(sourceAccountName).getCalendar(sourceCalendarId)
+    targetCalendar = CalendarService(targetAccountName).getCalendar(targetCalendarId)
 
     targetCalendar.copyAllEventsFrom(sourceCalendar, DatePeriod.weeks(1), copySensibleData)
 
