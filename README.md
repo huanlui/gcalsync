@@ -66,21 +66,21 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 ```
 
 - `account1` is the source account. The name should match with any XXX.credentials.json file. 
-- `calendar-id-21` is the id from the source calendar. To know this id, see [gcallist section](#gcallist-command)
+- `calendar-id-21` is the id from the source calendar. To know this id, see [gcallist section](#gcallist-command).
 - `account1` is the target account. The name should match with any XXX.credentials.json file. 
-- `calendar-id-21` is the id from the target calendar. To know this id, see [gcallist section](#gcallist-command)
-- `1d` means that we copy events from current time to the end of this day. Other possible values
-    - `2d: we copy events from current timme to the end of tomorrow. 3d, 4d and so on are also possible. 
-    - `1w`: we copy events from current time to the end of this week. 
-    - `2w`: we copy events from current time to the end of next week. 3w, 4w and so on are also possible. 
+- `calendar-id-21` is the id from the target calendar. To know this id, see [gcallist section](#gcallist-command).
+- `1d` means that it will copy events from current time to the end of this day. Other possible values
+    - `2d`: will copy events from current timme to the end of tomorrow. 3d, 4d and so on are also possible. 
+    - `1w`: will copy events from current time to the end of this week. 
+    - `2w`: will copy events from current time to the end of next week. 3w, 4w and so on are also possible. 
 
-`NOTE:` If you use "primary" as calendar id, you will use the account main calendar. Eg, this command would copy events from the main calendar in `account1` to the main calendar in `account2` 
+`NOTE:` If you use "primary" as calendar id, you will use the account main calendar. Eg. this command would copy events from the main calendar in `account1` to the main calendar in `account2` 
 
 ```shell script
  python3 gcalsync.py myaccount primary myaccount primary 1d 
 ```
 
-`NOTE:` You can also copy events from calendars inside the same account. Eg, this command would copy events from calendar with id c-1 to calendar with id c-2, both in the account `myaccount`
+`NOTE:` You can also copy events from calendars inside the same account. Eg. this command would copy events from calendar with id c-1 to calendar with id c-2, both in the account `myaccount`
 
 ```shell script
  python3 gcalsync.py myaccount "c-1" myaccount "c-2" 2d 
@@ -88,7 +88,7 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 
 `NOTE:` The command can safely be executed several times. All the already synchronised events will be removed from the target calendar and recreated. 
 
-`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `copySensibleData` at the end:
+`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `copySensibleData` at the end. Eg.
 
 ```shell script
 python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d copySensibleData
