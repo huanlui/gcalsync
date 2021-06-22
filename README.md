@@ -6,7 +6,7 @@ Python 3 is required.
 
 ## Security warnings
 
-- This application copies data from one Google account calendar to a different one. Please, make your that you are not sharing sensible data. 
+- This application copies data from one Google account calendar to a different one. Please, make share your that you are not sharing sensible data and confirm it with your organisation. 
 - Make sure you don't expose any credential information (.json and .pickle files are ignored on `.gitignore` file to prevent this.
 
 ## How to install
