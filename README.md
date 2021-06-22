@@ -12,12 +12,12 @@ pip3 install -r requirements.txt
 
 ## Credentials
 
-1) Go to https://console.cloud.google.com/apis/credentials
-2) Set up a new project
+1) Go to https://console.cloud.google.com/apis/credentials.
+2) Set up a new project.
 
 ![Set up a new project](.README_images/new_project.png)
 
-3) Choose any name (`gcal3` in the example) and don't select any organisation
+3) Choose any name (`gcal3` in the example) and don't select any organisation.
 
 ![Project name](.README_images/document_name.png)
 
@@ -29,7 +29,7 @@ pip3 install -r requirements.txt
 
 ![](.README_images/app_name.png)
 
-6) Click on `Save and Continue`
+6) Click on `Save and Continue`.
 
 7) Then, in scopes, select `Add or remove scopes` and in `Manually add scopes` put this:
 
@@ -46,14 +46,13 @@ https://www.googleapis.com/auth/calendar.events
 
 11) Click on `Save and Continue`.
 
-12) Go to Credentials, `Create Credentials`, select `OAuth client ID`
+12) Go to Credentials, `Create Credentials`, select `OAuth client ID`.
 
 ![Credentials](.README_images/credentials.png)
 
-13) Set application type to `Desktop app` and choose any application name. Oncen created opn
+13) Set application type to `Desktop app` and choose any application name. 
 
 ![](.README_images/credentials2.png)
-
 
 14) Once created, click on the created credential.
  
@@ -71,14 +70,14 @@ where `name` can be chosen by you to identify your account.
 
 16) Repeat all the previous steps if you want to manage other accounts. 
 
-### Run the application
+## Run the application
 
-The first time the application is run, a popup appears to verify your credentials. If a message indicates that Google has not
+The first time the application is run, a pop-up appears to verify your credentials. If a message indicates that Google has not
 verified the application, click on `Continue`
 
 ![App verification](.README_images/app_verification.png)
 
-Allos the permissions to edit calendars.
+Allow the permissions to edit calendars.
 
 ![](.README_images/permissions.png)
 
@@ -86,5 +85,3 @@ If you get a message like this, follow the instructions on it to enable calendar
 
 ![](.README_images/message.png)
 
-### Documentation
-https://medium.com/@bfortuner/python-unit-testing-with-pytest-and-mock-197499c4623c
