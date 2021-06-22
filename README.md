@@ -94,6 +94,27 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d copySensibleData
 ```
 
+### What if my organisation does not allow Google API?
+
+In that case, it is still possible to use `gcalsync`. Imagine that source account `account1` does not allow Google API. In that case, we won't be able to create the credentials file to copy events from `account1`.
+
+But we can make a calendar from `account1` visible in `account2` by following these steps:
+
+- Go to [calendars](https://calendar.google.com/calendar/u/0/r/month). 
+- Open `Settings and sharing` for the calendar you want to share.
+
+![Settings and sharing](.README_images/settings_sharings.png)
+
+- Add a new entry in `Share with specific people` including the email of the target account (`account2` in the example). You can select the level of visibility for those events (take into account your organisation security guidelines).
+
+![Share with specific people](.README_images/share_people.png)
+
+From this moment, you will have a copy from your calendar in your target account, so you will be able to copy events from it to your main calendar (or other account calendar) just using the credentials for `account2`. 
+
+```shell script
+python3 gcalsync.py account2 "calendar-copies-from-account-1" account2 "target-calendar" 1d 
+```
+
 ## Credentials
 
 1) Go to https://console.cloud.google.com/apis/credentials.
