@@ -52,7 +52,7 @@ This is useful to know the ID of the source and target calendars in `gcalsync` c
 
 ### `gcalsync` command
 
-This command copies event from a source calendar to a target one. Let's suppose we created two credentials file in the root folder:
+This command copies event from a source calendar to a target one. Let's suppose we created two credentials files in the root folder:
 
 ```
 account1.credentials.json
