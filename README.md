@@ -17,7 +17,7 @@ pip3 install -r requirements.txt
 
 ## Run the application
 
-To run the application, you have to generate as many `credential.json` as Google Account you want to manage. To create those files, read the [credentials section](#credentials).
+To run the application, you have to generate as many `credential.json` files as Google Account you want to manage. To create those files, read the [credentials section](#credentials).
 
 The first time the application is run, a pop-up appears to verify your credentials. If a message indicates that Google has not
 verified the application, click on `Continue`.
