@@ -178,6 +178,6 @@ where `name` can be chosen by you to identify your account.
 
 # Possible improvements 
 
-- Allow bi-directial synchronisation. Not very far away. 
-- Publish a command to avoid cloning the repo. See [this link](https://towardsdatascience.com/how-to-build-and-publish-command-line-applications-with-python-96065049abc1).
+- Allow bi-directional synchronisation. Not very far away. 
+- Publish a command to avoid having to clone the repo. See [this link](https://towardsdatascience.com/how-to-build-and-publish-command-line-applications-with-python-96065049abc1).
 
