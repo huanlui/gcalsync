@@ -94,6 +94,13 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d --copySensibleData
 ```
 
+`NOTE:` Use the `--colorId` argument to pick a color number (try values 1, 2, 3.. and so on) in order to visually distinguish the synced events:
+```shell script
+python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d --colorId 5
+```
+See the
+[colors](https://developers.google.com/calendar/api/v3/reference/colors/get) resource for more details and possible values.
+
 ### What if my organisation does not allow Google API?
 
 In that case, it is still possible to use `gcalsync`. Imagine that source account `account1` does not allow Google API. In that case, we won't be able to create the credentials file to copy events from `account1`.
