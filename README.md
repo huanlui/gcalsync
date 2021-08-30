@@ -88,10 +88,10 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 
 `NOTE:` The command can safely be executed several times. All the already synchronised events will be removed from the target calendar and recreated. 
 
-`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `copySensibleData` at the end. Eg.
+`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `--copySensibleData` at the end. Eg.
 
 ```shell script
-python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d copySensibleData
+python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d --copySensibleData
 ```
 
 ### What if my organisation does not allow Google API?

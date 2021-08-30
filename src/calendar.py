@@ -15,10 +15,10 @@ class Calendar:
         self.calendarId = calendarId
         self.googleService = googleService
 
-    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData):
+    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId):
         self.removeCopiedEvents(period)
         for event in otherCalendar.getEvents(period):
-            self.createEventFrom(event, copySensibleData)
+            self.createEventFrom(event, copySensibleData, colorId)
 
     def getEvents(self, period: DatePeriod):
         events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
@@ -36,7 +36,7 @@ class Calendar:
     def deleteEvent(self, eventId):
         self.googleService.events().delete(calendarId=self.calendarId, eventId=eventId).execute()
 
-    def createEventFrom(self, sourceEvent, copySensibleData):
+    def createEventFrom(self, sourceEvent, copySensibleData, colorId):
         eventBody = {
             'summary': (COPIED_EVENT_LEADING_TEXT + ' ' + sourceEvent.get('summary',
                                                                           '')) if copySensibleData else COPIED_EVENT_LEADING_TEXT,
@@ -49,6 +49,8 @@ class Calendar:
             ],
             'reminders': sourceEvent.get('reminders'),
         }
+        if colorId:
+            eventBody['colorId'] = colorId
 
         createdEvent = self.googleService.events().insert(calendarId=self.calendarId, body=eventBody).execute()
 
