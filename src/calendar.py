@@ -1,5 +1,6 @@
 from __future__ import print_function
 from src.date_period import DatePeriod
+from datetime import datetime
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -9,16 +10,25 @@ SCOPES = [
 
 COPIED_EVENT_LEADING_TEXT = '[CLIENT MEETING]'
 
+def as_datetime(time_object):
+    return datetime.fromisoformat(time_object['dateTime'])
+
+def start_and_end_equal(event1, event2):
+    return as_datetime(event1['start']) == as_datetime(event2['start']) and as_datetime(event1['end']) == as_datetime(event2['end'])
 
 class Calendar:
     def __init__(self, calendarId, googleService):
         self.calendarId = calendarId
         self.googleService = googleService
 
-    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId):
+    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId, skipMatching):
         self.removeCopiedEvents(period)
-        for event in otherCalendar.getEvents(period):
-            self.createEventFrom(event, copySensibleData, colorId)
+        events = otherCalendar.getEvents(period)
+        existing_events = self.getEvents(period)
+
+        for event in events:
+            if not skipMatching or not any(start_and_end_equal(event, e) for e in existing_events):
+                self.createEventFrom(event, copySensibleData, colorId)
 
     def getEvents(self, period: DatePeriod):
         events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
