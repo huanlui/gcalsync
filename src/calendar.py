@@ -1,5 +1,6 @@
 from __future__ import print_function
 from src.date_period import DatePeriod
+from datetime import datetime
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = [
@@ -11,26 +12,47 @@ COPIED_EVENT_LEADING_TEXT = '[CLIENT MEETING]'
 
 NUM_RETRIES = 10
 
+def as_datetime(time_object):
+    iso_value = time_object['dateTime'] if 'dateTime' in time_object else time_object['date']
+    return datetime.fromisoformat(iso_value)
+
+def start_and_end_equal(event1, event2):
+    try:
+        return as_datetime(event1['start']) == as_datetime(event2['start']) and as_datetime(event1['end']) == as_datetime(event2['end'])
+    except KeyError as e:
+        raise Exception("Events lack (start,end).dateTime: %s" % {"event1": event1, "event2": event2}) from e
+
 class Calendar:
     def __init__(self, calendarId, googleService):
         self.calendarId = calendarId
         self.googleService = googleService
 
-    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId):
-        self.removeCopiedEvents(period)
-        for event in otherCalendar.getEvents(period):
-            self.createEventFrom(event, copySensibleData, colorId)
+    def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId, skipMatching):
+        events = otherCalendar.getEvents(period)
+        existing_events = self.getEvents(period)
+        self.removeCopiedEvents(existing_events)
+
+        for event in events:
+            if not skipMatching or not any(start_and_end_equal(event, e) for e in existing_events):
+                self.createEventFrom(event, copySensibleData, colorId)
 
     def getEvents(self, period: DatePeriod):
-        events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
-                                                         timeMax=period.end, singleEvents=True,
-                                                         orderBy='startTime').execute(num_retries=NUM_RETRIES)
-        events = events_result.get('items', [])
+        events = []
+        page_token = None
+        while True:
+            events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
+                                                             timeMax=period.end, singleEvents=True,
+                                                             orderBy='startTime', pageToken=page_token).execute(num_retries=NUM_RETRIES)
+            events.extend(events_result['items'])
+            page_token = events_result.get('nextPageToken')
+            if not page_token:
+                break
+
         return events
 
-    def removeCopiedEvents(self, period: DatePeriod):
+    def removeCopiedEvents(self, events):
         eventsToRemove = list(
-            filter(lambda event: COPIED_EVENT_LEADING_TEXT in event.get('summary', ''), self.getEvents(period)))
+            filter(lambda event: COPIED_EVENT_LEADING_TEXT in event.get('summary', ''), events))
         for event in eventsToRemove:
             self.deleteEvent(event.get("id"))
 
