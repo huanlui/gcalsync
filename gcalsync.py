@@ -12,7 +12,7 @@ def main(sourceAccountName, sourceCalendarId, targetAccountName, targetCalendarI
     sourceCalendar = CalendarService(sourceAccountName).getCalendar(sourceCalendarId)
     targetCalendar = CalendarService(targetAccountName).getCalendar(targetCalendarId)
 
-    targetCalendar.copyAllEventsFrom(sourceCalendar, DatePeriod.weeks(1), copySensibleData)
+    targetCalendar.copyAllEventsFrom(sourceCalendar, datePeriod, copySensibleData)
 
     print('Events copied successfully')
 
