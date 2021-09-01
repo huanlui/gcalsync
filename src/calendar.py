@@ -35,10 +35,17 @@ class Calendar:
                 self.createEventFrom(event, copySensibleData, colorId)
 
     def getEvents(self, period: DatePeriod):
-        events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
-                                                         timeMax=period.end, singleEvents=True,
-                                                         orderBy='startTime').execute()
-        events = events_result.get('items', [])
+        events = []
+        page_token = None
+        while True:
+            events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
+                                                             timeMax=period.end, singleEvents=True,
+                                                             orderBy='startTime', pageToken=page_token).execute(num_retries=NUM_RETRIES)
+            events.extend(events_result['items'])
+            page_token = events_result.get('nextPageToken')
+            if not page_token:
+                break
+
         return events
 
     def removeCopiedEvents(self, events):
