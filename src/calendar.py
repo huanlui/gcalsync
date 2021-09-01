@@ -9,6 +9,7 @@ SCOPES = [
 
 COPIED_EVENT_LEADING_TEXT = '[CLIENT MEETING]'
 
+NUM_RETRIES = 10
 
 class Calendar:
     def __init__(self, calendarId, googleService):
@@ -23,7 +24,7 @@ class Calendar:
     def getEvents(self, period: DatePeriod):
         events_result = self.googleService.events().list(calendarId=self.calendarId, timeMin=period.start,
                                                          timeMax=period.end, singleEvents=True,
-                                                         orderBy='startTime').execute()
+                                                         orderBy='startTime').execute(num_retries=NUM_RETRIES)
         events = events_result.get('items', [])
         return events
 
@@ -34,7 +35,7 @@ class Calendar:
             self.deleteEvent(event.get("id"))
 
     def deleteEvent(self, eventId):
-        self.googleService.events().delete(calendarId=self.calendarId, eventId=eventId).execute()
+        self.googleService.events().delete(calendarId=self.calendarId, eventId=eventId).execute(num_retries=NUM_RETRIES)
 
     def createEventFrom(self, sourceEvent, copySensibleData, colorId):
         eventBody = {
@@ -52,7 +53,7 @@ class Calendar:
         if colorId:
             eventBody['colorId'] = colorId
 
-        createdEvent = self.googleService.events().insert(calendarId=self.calendarId, body=eventBody).execute()
+        createdEvent = self.googleService.events().insert(calendarId=self.calendarId, body=eventBody).execute(num_retries=NUM_RETRIES)
 
         return createdEvent
 
