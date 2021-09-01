@@ -11,10 +11,14 @@ SCOPES = [
 COPIED_EVENT_LEADING_TEXT = '[CLIENT MEETING]'
 
 def as_datetime(time_object):
-    return datetime.fromisoformat(time_object['dateTime'])
+    iso_value = time_object['dateTime'] if 'dateTime' in time_object else time_object['date']
+    return datetime.fromisoformat(iso_value)
 
 def start_and_end_equal(event1, event2):
-    return as_datetime(event1['start']) == as_datetime(event2['start']) and as_datetime(event1['end']) == as_datetime(event2['end'])
+    try:
+        return as_datetime(event1['start']) == as_datetime(event2['start']) and as_datetime(event1['end']) == as_datetime(event2['end'])
+    except KeyError as e:
+        raise Exception("Events lack (start,end).dateTime: %s" % {"event1": event1, "event2": event2}) from e
 
 class Calendar:
     def __init__(self, calendarId, googleService):
