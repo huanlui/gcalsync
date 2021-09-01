@@ -26,9 +26,9 @@ class Calendar:
         self.googleService = googleService
 
     def copyAllEventsFrom(self, otherCalendar, period: DatePeriod, copySensibleData, colorId, skipMatching):
-        self.removeCopiedEvents(period)
         events = otherCalendar.getEvents(period)
         existing_events = self.getEvents(period)
+        self.removeCopiedEvents(existing_events)
 
         for event in events:
             if not skipMatching or not any(start_and_end_equal(event, e) for e in existing_events):
@@ -41,9 +41,9 @@ class Calendar:
         events = events_result.get('items', [])
         return events
 
-    def removeCopiedEvents(self, period: DatePeriod):
+    def removeCopiedEvents(self, events):
         eventsToRemove = list(
-            filter(lambda event: COPIED_EVENT_LEADING_TEXT in event.get('summary', ''), self.getEvents(period)))
+            filter(lambda event: COPIED_EVENT_LEADING_TEXT in event.get('summary', ''), events))
         for event in eventsToRemove:
             self.deleteEvent(event.get("id"))
 
