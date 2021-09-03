@@ -88,11 +88,18 @@ python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d
 
 `NOTE:` The command can safely be executed several times. All the already synchronised events will be removed from the target calendar and recreated. 
 
-`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `copySensibleData` at the end. Eg.
+`NOTE:` By default, the name, description and location of the events are not copied to prevent exposing sensible data, but copying of sensible data can be enabled by adding the parameter `--copySensibleData` at the end. Eg.
 
 ```shell script
-python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d copySensibleData
+python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d --copySensibleData
 ```
+
+`NOTE:` Use the `--colorId` argument to pick a color number (try values 1, 2, 3.. and so on) in order to visually distinguish the synced events:
+```shell script
+python3 gcalsync.py account1 "calendar-id-21" account2 "calendar-id-33" 1d --colorId 5
+```
+See the
+[colors](https://developers.google.com/calendar/api/v3/reference/colors/get) resource for more details and possible values.
 
 ### What if my organisation does not allow Google API?
 
